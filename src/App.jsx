@@ -16,6 +16,8 @@ import Login from './pages/Login';
 import PageNotFound from './pages/PageNotFound';
 import AppLayout from './ui/AppLayout';
 
+const SupaBasePassword = 'LM.n*EvKe-J/2Zc';
+
 function App() {
   return (
     <>
