@@ -99,6 +99,7 @@ function Window({ children, name }) {
           <HiXMark />
         </Button>
         <div>
+          {/* children gets listed props */}
           {cloneElement(children, { onCloseModal: close })}
         </div>
       </StyledModal>
