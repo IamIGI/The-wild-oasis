@@ -1,4 +1,4 @@
-import supabase from './supabase';
+import supabase, { supabaseUrl } from './supabase';
 
 export async function signup({
   fullName,
@@ -59,3 +59,52 @@ export async function logout() {
   if (error)
     throw new Error('Logout error', { cause: error });
 }
+
+export async function updateCurrentUser({
+  password,
+  fullName,
+  avatar,
+}) {
+  let updateData;
+  if (password) updateData = { password };
+  if (fullName) updateData = { data: { fullName } };
+
+  //Update user primitive data
+  const { data, error } = await supabase.auth.updateUser(
+    updateData
+  );
+
+  if (error)
+    throw new Error('update user error', { cause: error });
+  if (!avatar) return data;
+
+  const fileName = `avatar-${
+    data.user.id
+  }-${Math.random()}`;
+
+  //Upload image to bucket
+  const { error: storageError } = await supabase.storage
+    .from('avatars')
+    .upload(fileName, avatar);
+
+  if (storageError)
+    throw new Error('update image user error', {
+      cause: storageError,
+    });
+
+  //Update avatar in DB
+  const { data: updatedUser, error: errorUser } =
+    await supabase.auth.updateUser({
+      data: {
+        avatar: `${supabaseUrl}/storage/v1/object/public/avatars/${fileName}`,
+      },
+    });
+  if (errorUser)
+    throw new Error('update image user into table error', {
+      cause: error,
+    });
+  return updatedUser;
+}
+
+// https://bxmaltcawkcfynthgfkk.supabase.co/storage/v1/object/public/avatars/cabin-002.jpg
+// https://bxmaltcawkcfynthgfkk.supabase.co/storage/v1/object/avatars/avatar-804457dd-624f-453c-8ea1-97689f30ed91-0.617581417395858
