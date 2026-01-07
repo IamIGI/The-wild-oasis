@@ -1,4 +1,5 @@
-import styled from "styled-components";
+/* eslint-disable react/prop-types */
+import styled from 'styled-components';
 
 const StyledStat = styled.div`
   /* Box */
@@ -23,7 +24,9 @@ const Icon = styled.div`
   justify-content: center;
 
   /* Make these dynamic, based on the received prop */
-  background-color: var(--color-${(props) => props.color}-100);
+  background-color: var(
+    --color-${(props) => props.color}-100
+  );
 
   & svg {
     width: 3.2rem;
